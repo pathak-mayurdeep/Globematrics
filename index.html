@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globmetrics v.1</title>
+    <meta name="author" content="Mayurdeep Pathak">
+    <meta name="description" content="Globmetrics is a AI tool to analyse eye (globe) movements.">
+
+    <link rel="stylesheet" type="text/css" href="assets/css/my_style.css">
+
+
+    <!-- BOOTSTRAP BEGIN -->
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+    <!-- BOOTSTRAP END -->
+
+
+
+</head>
+<body>
+    <!--    SVG    -->
+    <svg style="display:none;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <symbol id="via_logo">
+            <!-- Logo designed by Abhishek Dutta <adutta@robots.ox.ac.uk>, May 2018 -->
+            <title>VGG Image Annotator Logo</title>
+            <rect width="400" height="160" x="0" y="0" fill="#212121"></rect>
+  
+            <text x="56" y="130" font-family="Serif" font-size="100" fill="white">V</text>
+            <text x="180" y="130" font-family="Serif" font-size="100" fill="white">I</text>
+            <text x="270" y="130" font-family="Serif" font-size="100" fill="white">A</text>
+  
+            <rect width="80" height="100" x="52" y="40" stroke="yellow" fill="none" stroke-width="2"></rect>
+            <text x="72" y="30" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">VGG</text>
+  
+            <rect width="50" height="100" x="175" y="45" stroke="yellow" fill="none" stroke-width="2"></rect>
+            <text x="175" y="35" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">Image</text>
+  
+            <rect width="80" height="100" x="265" y="40" stroke="yellow" fill="none" stroke-width="2"></rect>
+            <text x="265" y="30" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">Annotator</text>
+          </symbol>
+          <symbol id="shape_rectangle">
+            <title>Rectangular region shape</title>
+            <rect width="20" height="12" x="6" y="10" stroke-width="2"></rect>
+          </symbol>
+
+
+          <symbol id="shape_circle">
+            <title>Circular region shape</title>
+            <circle r="10" cx="16" cy="16" stroke-width="2"></circle>
+          </symbol>
+          <symbol id="shape_ellipse">
+            <title>Elliptical region shape</title>
+            <ellipse rx="12" ry="8" cx="16" cy="16" stroke-width="2"></ellipse>
+          </symbol>
+          <symbol id="shape_polygon">
+            <title>Polygon region shape</title>
+            <path d="M 15.25,2.2372 3.625,11.6122 6,29.9872 l 20.75,-9.625 2.375,-14.75 z" stroke-width="2"></path>
+          </symbol>
+          <symbol id="shape_point">
+            <title>Point region shape</title>
+            <circle r="3" cx="16" cy="16" stroke-width="2"></circle>
+          </symbol>
+          <symbol id="shape_polyline">
+            <title>Polyline region shape</title>
+            <path d="M 2,12 10,24 18,12 24,18" stroke-width="2"></path>
+            <circle r="1" cx="2" cy="12" stroke-width="2"></circle>
+            <circle r="1" cx="10" cy="24" stroke-width="2"></circle>
+            <circle r="1" cx="18" cy="12" stroke-width="2"></circle>
+            <circle r="1" cx="24" cy="18" stroke-width="2"></circle>
+          </symbol>
+  
+          <!-- Material icons downloaded from https://material.io/icons -->
+          <symbol id="icon_settings">
+            <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
+          </symbol>
+          <symbol id="icon_save">
+            <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"></path>
+          </symbol>
+          <symbol id="icon_open">
+            <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"></path>
+          </symbol>
+          <symbol id="icon_gridon">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"></path>
+          </symbol>
+          <symbol id="icon_gridoff">
+            <path d="M8 4v1.45l2 2V4h4v4h-3.45l2 2H14v1.45l2 2V10h4v4h-3.45l2 2H20v1.45l2 2V4c0-1.1-.9-2-2-2H4.55l2 2H8zm8 0h4v4h-4V4zM1.27 1.27L0 2.55l2 2V20c0 1.1.9 2 2 2h15.46l2 2 1.27-1.27L1.27 1.27zM10 12.55L11.45 14H10v-1.45zm-6-6L5.45 8H4V6.55zM8 20H4v-4h4v4zm0-6H4v-4h3.45l.55.55V14zm6 6h-4v-4h3.45l.55.54V20zm2 0v-1.46L17.46 20H16z"></path>
+          </symbol>
+          <symbol id="icon_next">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
+          </symbol>
+
+
+
+          <symbol id="icon_fullscreen">
+            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"></path>
+          </symbol>
+
+
+          <symbol id="icon_prev">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+          </symbol>
+          <symbol id="icon_list">
+            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path>
+          </symbol>
+          <symbol id="icon_zoomin">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+            <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+          </symbol>
+          <symbol id="icon_zoomout">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"></path>
+          </symbol>
+          <symbol id="icon_copy">
+            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path>
+          </symbol>
+          <symbol id="icon_paste">
+            <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+          </symbol>
+          <symbol id="icon_pasten">
+            <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+            <text x="8" y="18">n</text>
+          </symbol>
+          <symbol id="icon_pasteundo">
+            <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+            <text x="8" y="18">x</text>
+          </symbol>
+          <symbol id="icon_selectall">
+            <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z"></path>
+          </symbol>
+          <symbol id="icon_close">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+          </symbol>
+          <symbol id="icon_insertcomment">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"></path>
+          </symbol>
+          <symbol id="icon_checkbox">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+          </symbol>
+          <symbol id="icon_fileupload">
+            <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"></path>
+          </symbol>
+          <symbol id="icon_filedownload">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+          </symbol>
+        </defs>
+    </svg>
+
+    <header id="header" class="header fixed-top align-items-center">
+
+      <div class="top_panel" id="ui_top_panel">
+        <!-- menu bar -->
+        <div class="menubar">
+            <ul>
+            <li class="menubar_globmetrics" onclick="show_home_panel()" style="cursor:pointer;">Globemetrics</li>
+            <li>Files
+                <ul>
+                    <li onclick="NewPatientForm()" title="">New Patient</li>
+                    <li onclick="LoadPatientForm()" title="">Load Patient</li>
+                    <li class="submenu_divider"></li>
+                    <li onclick="" title="">Settings</li>
+                    
+                </ul>
+            </li>
+    
+    
+            <li>Targets
+                <ul>
+                <li onclick="" title="">Smooth Horizontal</li>
+                <li onclick="openIframeFullscreen('target_apps/target_smooth.html')" title="">Smooth Path</li>
+                <li onclick="" class="submenu_divider"></li>
+                <li onclick="openIframeFullscreen('target_apps/target_random.html')" title="">Pop-up Random</li>
+                <li onclick="openIframeFullscreen('target_apps/target_diamond.html')" title="">Pop-up Diamond</li>
+                
+                </ul>
+            </li>
+    
+
+            <li>Capture
+              <ul>
+                <li onclick="openIframeUploadVideo()" title="">Upload video</li>
+                <li onclick="openIframeSyncWithTargets()" title="">Sync with Targets</li>
+                </ul>
+            </li>
+
+            <li>Analysis
+                
+            </li>
+    
+            <li>Help
+                
+            </li>
+            </ul>
+        </div> <!-- end of menubar -->
+        
+    
+        
+        <div class="toolbar" style="float : right;" >
+
+            <ul>
+              <li style="border: none;">
+                <svg onclick="bodyFullscreen()" viewbox="0 0 24 24"><use xlink:href="#icon_fullscreen"></use><title>Fullscreen</title></svg>
+
+              </li>
+
+                <li onclick="show_home_panel()" style="cursor:pointer;">Globemetrics v.1</li>
+            </ul>
+        </div>
+        
+    
+        <input type="file" id="invisible_file_input" name="files[]" style="display:none">
+        </div> <!-- endof #top_panel -->
+        
+  
+    </header>
+
+
+
+
+
+    <!-- Middle Panel contains a left-sidebar and image display areas -->
+    <div class="middle_panel">
+      <aside id="sidebar" class="sidebar">
+
+
+        <div class="card-body">
+          <h5 class="card-title">Patient Name</h5>
+          <h6 class="card-subtitle mb-2 text-muted">@username</h6>
+          <p class="card-text"></p>
+
+        </div>
+
+
+    
+        <!-- List group With badges -->
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            report 1
+            <span class="badge bg-primary rounded-pill">3</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            report 2
+            <span class="badge bg-primary rounded-pill">1</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            report 3
+            
+          </li>
+        </ul><!-- End List With badges -->
+
+
+    
+      </aside>
+
+
+      <main id="main" class="main" style="margin-top: 40px;">
+
+        <!-- The main container is hidden if iframe is to be displayed -->
+        <div id="main_container">
+          
+          <div class="pagetitle">
+            <h5>Dashboard</h5>
+            
+          </div>
+      
+          <section class="section dashboard">
+            <div class="row">
+      
+              <div class="col-lg-12">
+  
+  
+                <!-- New Patient -->
+                <div id="new_patient_form"  class="card" style="display: none;">
+                  <div class="card-body">
+                    <h5 class="card-title">Enter details of New Patient</h5>
+      
+                    <!-- Multi Columns Form -->
+                    <form class="row g-3">
+                      <div class="col-md-12">
+                        <label for="inputName5" class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" id="inputName5">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="inputEmail5" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail5">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="inputPassword5" class="form-label">Phone</label>
+                        <input type="password" class="form-control" id="inputPassword5">
+                      </div>
+                      <div class="col-12">
+                        <label for="inputAddress5" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="inputAddres5s" placeholder="1234 Main St">
+                      </div>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                        <input type="text" class="form-control" placeholder="Unique username" aria-label="Username" aria-describedby="basic-addon1">
+                      </div>
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                      </div>
+                    </form><!-- End Multi Columns Form -->
+      
+                  </div>
+                </div>
+  
+  
+                <!-- Load Patient -->
+                <div id="load_patient_form" class="card" style="display: none;">
+                  <div class="card-body">
+                    <h5 class="card-title">Load Patient</h5>
+                    <p>Select a patient from the list below to load for further analysis.</p>
+      
+                    <!-- Table with stripped rows -->
+                    <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns"><div class="datatable-top">
+                        <div class="datatable-dropdown">
+                                <label>
+                                    <select class="datatable-selector"><option value="5">5</option><option value="10" selected="">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option></select> entries per page
+                                </label>
+                            </div>
+                        <div class="datatable-search">
+                                <input class="datatable-input" placeholder="Search by name.." type="search" title="Search within table">
+                            </div>
+                    </div>
+                    <form>
+                          <div class="datatable-container">
+                            <select class="form-select" size="8" aria-label="size 3 select example">
+                              <option selected>Open this select menu</option>
+                              <option value="1">One</option>
+                              <option value="2">Two</option>
+                              <option value="3">Three</option>
+                              <option value="1">One</option>
+                              <option value="2">Two</option>
+                              <option value="3">Three</option>
+                              <option value="1">One</option>
+                              <option value="2">Two</option>
+                              <option value="3">Three</option>
+                              <option value="1">One</option>
+                              <option value="2">Two</option>
+                              <option value="3">Three</option>
+                            </select>
+                            
+                            </div>
+                          <div class="datatable-bottom">
+                              <div class="datatable-info">Showing 1 to 5 of 5 entries</div>
+                              <nav class="datatable-pagination"><ul class="datatable-pagination-list"></ul></nav>
+                          </div></div>
+                          <!-- End Table with stripped rows -->
+            
+                          <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                          </div>
+                    </form>
+  
+                  </div>
+                </div>
+              </div>
+      
+            </div>
+          </section>
+              
+        </div>
+
+        <!-- main_streamlit_iframe displays streamlit iframes -->
+        <div id="main_streamlit_iframe" style="display: none;">
+        </div>
+    
+      </main>
+
+
+
+      <footer id="footer" class="footer">
+        <div class="copyright">
+          © Copyright <strong><span>Mehta Family School of Data Science and Artificial Intelligence, IIT Guwahati</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+          Principal Investigator : Prof. Debanga Raj Neog<br>
+          Developed by <a href="">Mayurdeep Pathak</a>
+        </div>
+      </footer>
+
+      
+
+    </div>
+
+    <!-- Main display area: contains iframe, ... -->
+    <div id="target-iframe-container" style="height: 1080px; display: none;">
+    </div>
+
+    <script src="assets/js/my_scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Circle Moving Animation</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #menu-bar {
+            width: 100%;
+            height: 60px;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            z-index: 0;
+        }
+
+        canvas {
+            background-color: #f2f2f2;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu-bar">
+        <div id="menu">
+            <button id="startButton" onclick="startPause()">Start</button>
+        </div>
+    </div>
+    <div id="canvas-container">
+        <canvas id="myCanvas" width="1920" height="1080"></canvas>
+    </div>
+    <script type="text/javascript">
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        var radius = 50;
+        var ANIMATION_INTERVAL = 2000; // 2000ms or 2 sec
+        var animationId = null;
+        var notStarted = true;
+
+        function drawRandomCircle() {
+            var newX = Math.floor(Math.random() * canvas.width);
+            var newY = Math.floor(Math.random() * canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(newX, newY, radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff0000";
+            ctx.fill();
+        }
+
+
+		function startAnimation() {
+			animationId = setInterval(drawRandomCircle, ANIMATION_INTERVAL);
+			document.getElementById("startButton").innerHTML = "Stop";
+            notStarted = false;
+		}
+
+		function stopAnimation() {
+			clearInterval(animationId);
+			document.getElementById("startButton").innerHTML = "Start";
+            notStarted = true;
+		}
+
+
+
+        function beep(duration, frequency, volume){
+            const myAudioContext = new AudioContext();
+
+            return new Promise((resolve, reject) => {
+                // Set default duration if not provided
+                duration = duration || 200;
+                frequency = frequency || 440;
+                volume = volume || 100;
+
+                try{
+                    let oscillatorNode = myAudioContext.createOscillator();
+                    let gainNode = myAudioContext.createGain();
+                    oscillatorNode.connect(gainNode);
+
+                    // Set the oscillator frequency in hertz
+                    oscillatorNode.frequency.value = frequency;
+
+                    // Set the type of oscillator
+                    oscillatorNode.type= "square";
+                    gainNode.connect(myAudioContext.destination);
+
+                    // Set the gain to the volume
+                    gainNode.gain.value = volume * 0.01;
+
+                    // Start audio with the desired duration
+                    oscillatorNode.start(myAudioContext.currentTime);
+                    oscillatorNode.stop(myAudioContext.currentTime + duration * 0.001);
+
+                    // Resolve the promise when the sound is finished
+                    oscillatorNode.onended = () => {
+                        resolve();
+                    };
+                }catch(error){
+                    reject(error);
+                }
+            });
+        }
+
+
+        function startPause() {
+			if (notStarted) {
+				setTimeout(beep, 0);
+				setTimeout(beep, 400);
+				setTimeout(beep, 800);
+				
+				setTimeout(function() {
+					startAnimation();
+				}, 1000);
+			} else {
+				stopAnimation();
+			}
+		}
+
+
+
+        
+    </script>
+</body>
+</html>
